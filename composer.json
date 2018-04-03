@@ -1,0 +1,25 @@
+{
+    "name": "phpcan/client",
+    "description": "phpcan client sdk",
+    "license": "MIT",
+    "keywords": ["phpcan", "phpcan-client", "soa"],
+    "version": "1.0.1",
+    "authors": [
+        {
+            "name": "suruibuas",
+            "email": "317953536@qq.com"
+        }
+    ],
+    "require": {
+        "ares333/php-curl": "4.2.1"
+    },
+    "autoload": {
+        "psr-0": {"phpcan\\": "src/"}
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
