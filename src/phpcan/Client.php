@@ -87,7 +87,7 @@ class Client{
      * @param string $url
      * @param array $params
      */
-    public function get(string $url = '', array $params = [])
+    public function get($url = '', $params = [])
     {
         if ($url == '')
         {
@@ -131,7 +131,7 @@ class Client{
      * @param array $params
      * @return array
      */
-    public function post(string $url = '', array $data = [], array $params = [])
+    public function post($url = '', $data = [], $params = [])
     {
         if ($url == '')
         {
@@ -175,7 +175,7 @@ class Client{
      * @param array $params
      * @return object
      */
-    public function add(string $key = '', array $params = [])
+    public function add($key = '', $params = [])
     {
         if ( ! isset($params['url']))
         {
@@ -245,7 +245,7 @@ class Client{
      * 描述：设置请求超时时间
      * @param int $timeOut
      */
-    public function timeout(int $timeOut)
+    public function timeout($timeOut)
     {
         $this->_timeOut = $timeOut;
     }
@@ -253,7 +253,7 @@ class Client{
     /**
      * 描述：添加HEADER请求头信息
      */
-    public function header(array $header = [])
+    public function header($header = [])
     {
         if (empty($header))
         {
@@ -359,7 +359,7 @@ class Client{
      * 描述：返回错误信息
      * @param array $return
      */
-    private function _error(array $return = [])
+    private function _error($return = [])
     {
         exit(json_encode($return, JSON_UNESCAPED_UNICODE));
     }
@@ -369,7 +369,7 @@ class Client{
      * @param string $url
      * @param array $params
      */
-    private function _baseUrl(string $url = '', array $query = [])
+    private function _baseUrl($url = '', $query = [])
     {
         $serviceUrl  = $this->_conf['GATEWAY'];
         $serviceUrl .= (preg_match('#^/.*#', $url)) ? $url : '/'.$url;
