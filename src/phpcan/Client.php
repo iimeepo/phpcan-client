@@ -278,7 +278,7 @@ class Client{
         {
             $this->_error([
                 'code' => 500,
-                'msg'  => '没有发现服务dmc的编排信息'
+                'msg'  => '没有发现服务'.$namespace.'的编排信息'
             ]);
         }
         $composer = $this->_conf['COMPOSER'][$namespace];
