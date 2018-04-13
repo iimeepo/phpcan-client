@@ -17,7 +17,7 @@ return [
     // 网关地址
     'GATEWAY'     => '',
     // 当前环境 0 测试 1 生产
-    'ENVIRONMENT' => 0,
+    'ENVIRONMENT' => 1,
     // 调用端 web、wap、android、iOS、pc、tv
     'CLIENT'      => '',
     // 开发者账号

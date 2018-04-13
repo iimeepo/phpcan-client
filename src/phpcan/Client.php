@@ -36,7 +36,23 @@ class Client{
      */
     public function __construct()
     {
-        $this->_conf = require 'Conf.php';
+        $this->_conf = [];
+        // 判断是不是在PHPCAN框架下并开启了SOA支持
+        if (defined('_SOA') && _SOA)
+        {
+            $conf = conf();
+            $this->_conf['GATEWAY']     = _GATEWAY;
+            $this->_conf['ENVIRONMENT'] = $conf['ENVIRONMENT'];
+            $this->_conf['CLIENT']      = $conf['CLIENT'];
+            $this->_conf['UNAME']       = $conf['SOAUNAME'];
+            $this->_conf['PWORD']       = $conf['SOAPWORD'];
+            $this->_conf['TIMEOUT']     = $conf['HTTP_TIMEOUT'];
+            $this->_conf['COMPOSER']    = $conf['COMPOSER'];
+        }
+        else
+        {
+            $this->_conf = require 'Conf.php';
+        }
         if ( ! isset($this->_conf['GATEWAY']) || ! $this->_conf['GATEWAY'])
         {
             $this->_error([
@@ -51,7 +67,7 @@ class Client{
                 'msg'  => '项目所在环境配置不正确，"0" 测试环境 "1" 生产环境'
             ]);
         }
-        if ( ! isset($this->_conf['CLIENT']) || ! in_array($this->_conf['CLIENT'], ['web', 'wap']))
+        if ( ! isset($this->_conf['CLIENT']))
         {
             $this->_error([
                 'code' => 500,
@@ -109,6 +125,7 @@ class Client{
                 CURLOPT_URL => $url,
                 CURLOPT_TIMEOUT => $this->_timeOut,
                 CURLOPT_HTTPHEADER => $this->_header,
+                CURLOPT_FOLLOWLOCATION => FALSE,
                 CURLOPT_CUSTOMREQUEST => 'GET'
             ]
         ],
@@ -140,6 +157,7 @@ class Client{
                 'msg'  => '请求的服务地址不能为空'
             ]);
         }
+        $this->_url = $url;
         // 组装URI
         $url = $this->_baseUrl($url, $params);
         // 组装HEADER头信息
@@ -153,11 +171,12 @@ class Client{
                 CURLOPT_TIMEOUT => $this->_timeOut,
                 CURLOPT_HTTPHEADER => $this->_header,
                 CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_FOLLOWLOCATION => FALSE,
                 CURLOPT_POST => TRUE,
                 CURLOPT_POSTFIELDS => http_build_query($data)
             ]
         ],
-        function($result) use (&$response, $debug, $header){
+        function($result) use (&$response){
             $response = $this->_response($result['body']);
         },
         function($result) use (&$response){
@@ -238,6 +257,7 @@ class Client{
                 });
         }
         $this->_client->start();
+        $this->_multi = [];
         return $response;
     }
 
@@ -248,6 +268,7 @@ class Client{
     public function timeout($timeOut)
     {
         $this->_timeOut = $timeOut;
+        return $this;
     }
 
     /**
@@ -371,7 +392,7 @@ class Client{
      */
     private function _baseUrl($url = '', $query = [])
     {
-        $serviceUrl  = $this->_conf['GATEWAY'];
+        $serviceUrl  = rtrim($this->_conf['GATEWAY'],'/');
         $serviceUrl .= (preg_match('#^/.*#', $url)) ? $url : '/'.$url;
         // 解析参数
         if (empty($query))
