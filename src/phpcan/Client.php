@@ -103,7 +103,7 @@ class Client{
      * @param string $url
      * @param array $params
      */
-    public function get($url = '', $params = [])
+    public function get($url = '', $params = [], $cache = FALSE)
     {
         if ($url == '')
         {
@@ -119,6 +119,10 @@ class Client{
         $this->_createHeader();
         // 初始化结果
         $response = [];
+        // 允许网关缓存
+        $cache = (is_bool($params)) ? $params : $cache;
+        if ($cache)
+            $this->_header[] = 'SOACACHE:1';
         // 发送请求
         $this->_client->add([
             'opt' => [
@@ -274,6 +278,7 @@ class Client{
 
     /**
      * 描述：添加HEADER请求头信息
+     * @param $header
      */
     public function header($header = [])
     {
@@ -396,7 +401,7 @@ class Client{
         $serviceUrl  = rtrim($this->_conf['GATEWAY'],'/');
         $serviceUrl .= (preg_match('#^/.*#', $url)) ? $url : '/'.$url;
         // 解析参数
-        if (empty($query))
+        if ( ! is_array($query) || empty($query))
         {
             return $serviceUrl;
         }
