@@ -241,6 +241,7 @@ class Client{
         {
             $method = (isset($row['post']) && ! empty($row['post'])) ? 'POST' : 'GET';
             $opt = [];
+            $this->_url = $row['url'];
             $opt['opt'] = [
                 CURLOPT_FOLLOWLOCATION => FALSE,
                 CURLOPT_URL => $this->_baseUrl($row['url'], $row['query']),
