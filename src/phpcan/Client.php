@@ -354,14 +354,7 @@ class Client{
         }
         else
         {
-            if (empty($this->_header))
-            {
-                $this->_header = $header;
-            }
-            else
-            {
-                $this->_header = array_merge($this->_header, $header);
-            }
+            $this->_header = (empty($this->_header)) ? $header : array_merge($this->_header, $header);
         }
     }
 
