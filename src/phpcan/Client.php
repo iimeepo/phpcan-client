@@ -150,9 +150,10 @@ class Client{
      * @param string $url
      * @param array $data
      * @param array $params
+     * @param string $method
      * @return array
      */
-    public function post($url = '', $data = [], $params = [])
+    public function post($url = '', $data = [], $params = [], $method = 'POST')
     {
         if ($url == '')
         {
@@ -161,7 +162,7 @@ class Client{
                 'msg'  => '请求的服务地址不能为空'
             ]);
         }
-		if (empty($data))
+        if (empty($data) && ($method == 'POST' || $method == 'PUT'))
         {
             $this->_error([
                 'code' => 500,
@@ -181,7 +182,7 @@ class Client{
                 CURLOPT_URL => $url,
                 CURLOPT_TIMEOUT => $this->_timeOut,
                 CURLOPT_HTTPHEADER => $this->_header,
-                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_CUSTOMREQUEST => $method,
                 CURLOPT_FOLLOWLOCATION => FALSE,
                 CURLOPT_POST => TRUE,
                 CURLOPT_POSTFIELDS => http_build_query($data)
@@ -197,6 +198,28 @@ class Client{
         $this->_header = [];
         // 返回数据
         return $response;
+    }
+
+    /**
+     * 描述：发送PUT请求
+     * @param string $url
+     * @param array $data
+     * @param array $params
+     */
+    public function put($url = '', $data = [], $params = [])
+    {
+        return $this->post($url, $data, $params, 'PUT');
+    }
+
+    /**
+     * 描述：发送DELETE请求
+     * @param string $url
+     * @param array $data
+     * @param array $params
+     */
+    public function delete($url = '', $data = [], $params = [])
+    {
+        return $this->post($url, $data, $params, 'DELETE');
     }
 
     /**
